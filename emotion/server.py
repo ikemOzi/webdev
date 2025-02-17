@@ -17,6 +17,20 @@ def generate_frames():
         if not success:
             break
         else:
+            faceCascade = cv2.CascadeClassifier(r"emotion\artifacts\haarcascades\haarcascade_frontalface_default.xml")
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            faces = faceCascade.detectMultiScale(gray, 1.1, 4)
+            for x, y, w, h in faces:
+                roi_gray = gray[y:y + h, x:x + w]
+                roi_color = frame[y:y + h, x:x + w]
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+                faces = faceCascade.detectMultiScale(roi_gray)
+                if len(faces) == 0:
+                    print("Face not detected")
+                else:
+                    for (ex, ey, ew, eh) in faces:
+                        face_roi = roi_color[ey: ey + eh, ex:ex + ew]
+
             ret,buffer = cv2.imencode('.jpg', frame)
             frame= buffer.tobytes()
 
