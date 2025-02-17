@@ -17,7 +17,7 @@ def generate_frames():
         if not success:
             break
         else:
-            faceCascade = cv2.CascadeClassifier(r"emotion\artifacts\haarcascades\haarcascade_frontalface_default.xml")
+            faceCascade = cv2.CascadeClassifier(r"C:\Users\IKEMBUCHUKWU\PycharmProjects\automating\emotion\artifacts\haarcascades\haarcascade_frontalface_default.xml")
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             faces = faceCascade.detectMultiScale(gray, 1.1, 4)
             for x, y, w, h in faces:
