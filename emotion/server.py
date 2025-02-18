@@ -4,9 +4,7 @@ import numpy as np
 import tensorflow as tf
 import keras
 
-from keras.models import load_model
-
-model = load_model(r"C:\Users\IKEMBUCHUKWU\PycharmProjects\automating\emotion\artifacts\disgust_surp_happy_sad 83.keras")
+model = keras.models.load_model(r"C:\Users\IKEMBUCHUKWU\PycharmProjects\automating\emotion\artifacts\disgust_surp_happy_sad 83.keras")
 
 
 app= Flask(__name__)
@@ -49,12 +47,16 @@ def generate_frames():
                 if len(faces) == 0:
                     print("Face not detected")
                 else:
+                    face_roi = None
                     for (ex, ey, ew, eh) in faces:
                         face_roi = roi_color[ey: ey + eh, ex:ex + ew]
 
-            final_image = cv2.resize(face_roi, (64, 64))
-            final_image = np.expand_dims(final_image, axis=0)
-            final_image = final_image / 255.0
+            if face_roi is not None:
+                final_image = cv2.resize(face_roi, (64, 64))
+                final_image = np.expand_dims(final_image, axis=0)
+                final_image = final_image / 255.0
+            else:
+                continue
 
             font = cv2.FONT_HERSHEY_SIMPLEX
 
