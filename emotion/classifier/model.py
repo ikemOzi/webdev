@@ -1,30 +1,23 @@
-from flask import Flask, render_template, Response
+import keras
 import cv2
 import numpy as np
-import tensorflow as tf
-import keras
 
-model = keras.models.load_model(r"C:\Users\IKEMBUCHUKWU\PycharmProjects\automating\emotion\artifacts\disgust_surp_happy_sad 83.keras")
-
-
-app= Flask(__name__)
-
-
-
-font_scale = 1.5
-font = cv2.FONT_HERSHEY_PLAIN
-rectangle_bgr = (255, 255, 255)
-img = np.zeros((500,500))
-text = "some text in a box!"
-(text_width, text_height) = cv2.getTextSize(text, font, fontScale= font_scale, thickness= 1)[0]
-text_offset_x = 10
-text_offset_y = img.shape[0] - 25
-
-box_coords = ((text_offset_x, text_offset_y), (text_offset_x + text_width + 2, text_offset_y - text_height - 2))
-cv2.rectangle(img, box_coords[0], box_coords[1], rectangle_bgr, cv2.FILLED)
-cv2.putText(img, text, (text_offset_x, text_offset_y), font, fontScale = font_scale, color = (0,0,0), thickness = 1)
+model = keras.models.load_model(r"C:\Users\IKEMBUCHUKWU\PycharmProjects\automating\emotion\classifier\artifacts\disgust_surp_happy_sad 83.keras")
 
 def generate_frames():
+    font_scale = 1.5
+    font = cv2.FONT_HERSHEY_PLAIN
+    rectangle_bgr = (255, 255, 255)
+    img = np.zeros((500, 500))
+    text = "some text in a box!"
+    (text_width, text_height) = cv2.getTextSize(text, font, fontScale=font_scale, thickness=1)[0]
+    text_offset_x = 10
+    text_offset_y = img.shape[0] - 25
+
+    box_coords = ((text_offset_x, text_offset_y), (text_offset_x + text_width + 2, text_offset_y - text_height - 2))
+    cv2.rectangle(img, box_coords[0], box_coords[1], rectangle_bgr, cv2.FILLED)
+    cv2.putText(img, text, (text_offset_x, text_offset_y), font, fontScale=font_scale, color=(0, 0, 0), thickness=1)
+
     camera = cv2.VideoCapture(0)
 
     if not camera.isOpened():
@@ -36,7 +29,7 @@ def generate_frames():
         if not success:
             break
         else:
-            faceCascade = cv2.CascadeClassifier(r"C:\Users\IKEMBUCHUKWU\PycharmProjects\automating\emotion\artifacts\haarcascades\haarcascade_frontalface_default.xml")
+            faceCascade = cv2.CascadeClassifier(r"C:\Users\IKEMBUCHUKWU\PycharmProjects\automating\emotion\classifier\artifacts\haarcascades\haarcascade_frontalface_default.xml")
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             faces = faceCascade.detectMultiScale(gray, 1.1, 4)
             for x, y, w, h in faces:
@@ -44,6 +37,9 @@ def generate_frames():
                 roi_color = frame[y:y + h, x:x + w]
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
                 faces = faceCascade.detectMultiScale(roi_gray)
+
+                face_roi = None
+
                 if len(faces) == 0:
                     print("Face not detected")
                 else:
@@ -115,19 +111,4 @@ def generate_frames():
 
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-
-
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/video')
-def video():
-    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
 
