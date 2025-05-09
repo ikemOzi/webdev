@@ -4,7 +4,14 @@ import numpy as np
 
 model = keras.models.load_model(r"C:\Users\IKEMBUCHUKWU\PycharmProjects\automating\emotion\classifier\artifacts\disgust_surp_happy_sad 83.keras")
 
+video_streaming = False
+
+def set_video_streaming(value):
+    global video_streaming
+    video_streaming = value
+
 def generate_frames():
+    global video_streaming
     font_scale = 1.5
     font = cv2.FONT_HERSHEY_PLAIN
     rectangle_bgr = (255, 255, 255)
@@ -24,7 +31,7 @@ def generate_frames():
         print("Error: could not open camera")
         return
 
-    while True:
+    while video_streaming:
         success, frame = camera.read()
         if not success:
             break
@@ -111,4 +118,4 @@ def generate_frames():
 
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
+    camera.release()

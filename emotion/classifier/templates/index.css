@@ -1,0 +1,14 @@
+.myrow{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.mycolumn{
+    border-style: solid;
+    border-color: red;
+}
+
+.footer{
+    border-style: solid;
+    border-color: red;
+}

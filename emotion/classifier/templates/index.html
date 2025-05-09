@@ -1,15 +1,173 @@
 {% extends "base.html" %}
-<html>
-<head>
-    {% block title %} live Feed {% endblock%}
-</head>
-<body>
-{% block content %}
-    <h1> Live-streaming </h1>
-    <div>
-    <!--<img src="{{url_for('video')}}" width="50%"> -->
-    </div>
-{% endblock %}
-</body>
 
-</html>
+{% block title %} live Feed {% endblock %}
+
+{% block content %}
+
+<style>
+    body{
+        margin:0;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+    }
+
+    #container{
+        width: 100%;
+        height: 100%;
+        border-style: solid;
+        border-color: blue;
+    }
+
+    .myrow{
+        display:grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        width: 100%;
+        height: 100%;
+        
+    }
+
+    .mycolumn{
+        display:flex;
+        flex-direction: column;
+        border-style: solid;
+        border-color: red; 
+        justify-content:center;
+        align-items: center; 
+    }
+
+    .centerBox{
+        display:flex;
+        border-style: solid;
+        flex-direction: column;
+        border-color: greenyellow;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+        width: 200px;
+        height: 200px;
+        justify-content: center;
+        align-items:center;
+    }
+
+    .footer{
+        border-style: solid;
+        border-color: red;
+        grid-column: span 2;
+        height: 100px
+    }
+
+    #emotion{
+        height: 200px;
+        width: 400px;
+       
+
+    }
+
+    button{
+        width:70px;
+        height: 50px;
+        border-radius: 50px;
+        background-color: hsl(120, 81%, 55%);
+    }
+
+    button:hover{
+        background-color: hsl(120, 81%, 65%); 
+        
+    }
+
+    .stop_button:hover{
+        background-color: hsl(0, 98%, 61%);
+    }
+
+    
+</style> 
+
+    <div id="container">
+        <div class="myrow">
+            <div class = "mycolumn">
+                <img src="{{url_for('static',filename='sad_face.jpg')}}" id="emotion">
+                <div>SAD</div>
+            </div>
+            <div class = "mycolumn"> 
+                <img src="{{url_for('static',filename='happy_face.jpg')}}" id="emotion">
+                <div>HAPPY</div>
+            </div>
+            <div class = "mycolumn">
+                <img src="{{url_for('static',filename='disgust_face.webp')}}" id="emotion">
+                <div>DISGUST</div>
+            </div>
+            <div class = "mycolumn"> 
+                <img src="{{url_for('static',filename='surprise_face.jpg')}}" id="emotion">
+                <div>SURPRISE</div>
+            </div>
+            <div class=" centerBox">
+                <button id="start_button">START</button>
+            </div>
+            <div class = "footer"> foot </div>
+        </div>
+    </div>
+
+    <script>
+        let url = "{{url_for('video')}}"
+        let button = document.getElementById("start_button");
+        let centerBox = document.getElementsByClassName("centerBox");
+        let img = null;
+
+
+
+        function record(event){
+            if (button.textContent == "START"){
+                //  create img tag
+                img = document.createElement("img");
+                img.src = url + "?t=" + new Date().getTime();
+                // append img tag
+                centerBox[0].prepend(img);
+                button.style.backgroundColor = "hsl(0, 98%, 51%)";
+                button.textContent = "STOP";
+                button.classList.add("stop_button");
+                
+            }
+            else{
+                if(img && centerBox[0].contains(img)){
+                    // remove img tag
+                    centerBox[0].removeChild(img);
+                }
+                // Notify server to stop the stream
+                fetch("/stop_video");
+
+                // change button content
+                button.textContent = "START";
+                button.style.backgroundColor = "hsl(120, 81%, 55%)"
+                button.classList.remove("stop_button");
+                
+            }
+   
+        
+            
+        }
+        button.addEventListener("click", record);
+    </script>
+    <!-- <h1> Live-streaming </h1>
+    <button id="start-button" onclick="display()">Start Detecting</button>
+    <div id="video-container">
+    </div>
+    <script>
+        let url = "{{url_for('video')}}";
+        // let button = document.querySelector("#start-button");
+        let button = document.getElementById("start-button")
+        let container = document.getElementById("#video-container");
+
+        function display() {
+            let img = document.createElement('img');
+            img.src = url;
+            container.appendChild(img);
+        }
+
+
+
+    </script> -->
+    {% endblock %}
