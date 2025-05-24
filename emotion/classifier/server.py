@@ -5,8 +5,9 @@ from .model import generate_frames, set_video_streaming
 
 
 @app.route('/')
-def index():
-    return render_template('index.html')
+@app.route('/Live_Classifier')
+def liveClassifier():
+    return render_template('liveClassifier.html')
 
 @app.route('/video')
 def video():
@@ -17,4 +18,8 @@ def video():
 def stop_video():
     set_video_streaming(False)
     return ('', 204)
+
+@app.route('/home_page')
+def home_page():
+    return render_template('home_page.html')
 
