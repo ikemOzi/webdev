@@ -1,7 +1,6 @@
 from . import app
 from flask import render_template, Response
-from .model import generate_frames, set_video_streaming
-
+from .model import generate_frames, camera_video
 
 
 @app.route('/')
