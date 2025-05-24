@@ -23,3 +23,11 @@ def stop_video():
 def home_page():
     return render_template('home_page.html')
 
+@app.route('/takePhoto')
+def takePhoto_page():
+    return render_template('TakePhoto.html')
+
+@app.route('/photo')
+def photo():
+    return Response(camera_video(), mimetype='multipart/x-mixed-replace; boundary=frame')
+

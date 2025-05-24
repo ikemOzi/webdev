@@ -118,4 +118,25 @@ def generate_frames():
 
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-    camera.release()
+    
+
+def camera_video():
+    capture = cv2.VideoCapture(0)
+
+    while True:
+        isTrue, frame = capture.read()
+        if not isTrue:
+            print('Failed to read frame')
+            break
+        cv2.imshow('Frame', frame)
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+        ret,buffer = cv2.imencode('.jpg', frame)
+        frame= buffer.tobytes()
+
+    yield (b'--frame\r\n'
+           b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+   
