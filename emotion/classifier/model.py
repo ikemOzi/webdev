@@ -128,15 +128,15 @@ def camera_video():
         if not isTrue:
             print('Failed to read frame')
             break
-        cv2.imshow('Frame', frame)
+        
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-
+        # cv2.imshow('Camera', frame)
         ret,buffer = cv2.imencode('.jpg', frame)
         frame= buffer.tobytes()
 
-    yield (b'--frame\r\n'
+        yield (b'--frame\r\n'
            b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
    
