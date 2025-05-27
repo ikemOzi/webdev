@@ -1,33 +1,23 @@
-let url = "{{url_for('video')}}"
-let button = document.getElementById("start_button");
-let centerBox = document.getElementsByClassName("centerBox");
-let img = null;
+
+let container = document.getElementsByClassName('takePhoto');
+let button = document.getElementById('startButton');
+let otherContainer = document.getElementsByClassName("otherButtons");
+let button1 = null;
+let button2 = null;
+
+function startSelfie(event){
+    img = document.createElement('img');
+    img.src = "photo";
+    container[0].append(img);
+    button.style.display = "none";  // hide button
+    button1 = document.createElement('button');
+    button2 = document.createElement('button');
+    button1.id = 'TakePhoto';
+    button2.id = 'STOP';
+    button1.textContent = 'Take Selfie 😊';
+    button2.textContent = 'Stop';
+    otherContainer[0].append(button1);
+    otherContainer[0].append(button2);
 
 
-
-function record(event){
-    if (button.textContent == "START"){
-         //  create img tag
-        img = document.createElement("img");
-        img.src = url;
-        // append img tag
-        centerBox.prepend(img);
-        button.style.backgroundColor = "hsl(0, 98%, 51%)";
-        button.textContent = "STOP";
-        button.id = "stop_button"
-    }
-    else{
-        if(img && centerBox.contains(img)){
-            // remove img tag
-            centerBox[0].removeChild(img);
-        }
-        // change button content
-        button.textContent == "START";
-        button.style.backgroundColor = "hsl(120, 81%, 55%)"
-        button.removeAttribute("id");
-        
-    }
-   
-    
 }
-button.addEventListener("click", record);

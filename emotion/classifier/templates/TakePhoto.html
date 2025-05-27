@@ -12,12 +12,70 @@
         font-family:sans-serif;
     }
 
+    .takePhoto{
+        border-style: dashed;
+        width: 500px;
+        height: 400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color:hsl(0, 7%, 5%);
+    }
+
+    #startButton{
+        font-size: 12px;
+        width:100px;
+        height: 70px;
+        border-radius: 25px;
+        background-color: hsl(120, 81%, 55%);
+        font-family: sans-serif;
+        font-weight: bold; 
+    }
+
+    #startButton:hover{
+        background-color: hsl(120, 81%, 65%);
+    }
+
+    .otherButtons{
+        display: flex;
+        justify-content: space-between;
+        width: 500px;
+        margin: 0 auto;
+        border-style:none
+        
+    }
+
+    #TakePhoto{
+        background-color: hsl(207, 75%, 70%);
+        height: 40px;
+        border-radius:25px ;
+        width:140px;
+
+    }
+
+    #TakePhoto:hover{
+        background-color: hsl(207, 75%, 80%);
+    }
+
+    #STOP{
+       background-color: hsl(0, 98%, 58%);
+       height: 40px;
+       border-radius:25px ; 
+       width: 100px;
+    }
+
+    #STOP:hover{
+        background-color: hsl(0, 98%, 68%);
+    }
+
+  
 </style>
 
 
 
 <div id = container>
-    <h1 style="text-align: center;"> What Is My Emotion? </h1>
+    <h1 style="text-align:center ;"> What Is My Emotion? </h1>
     <div id="summary" style="text-align: center; font-size: 20px;">
         <p>
             Let our AI decide what emotion you are feeling at the moment. 
@@ -51,10 +109,44 @@
     </div>
 
     <div>
-        <h3> Take Photo </h3>
+        <h3 style="text-align: center;"> Take Photo </h3>
         <div class="takePhoto">
-            <img src="{{url_for('photo')}}">
+            <!-- <img src="{{url_for('photo')}}"> -->
+            <button id="startButton"> Start </button>
+        </div>
+        <div class="otherButtons">
+
         </div>
     </div>
 </div>
+
+<script>
+    let container = document.getElementsByClassName('takePhoto');
+    let button = document.getElementById('startButton');
+    let otherContainer = document.getElementsByClassName("otherButtons");
+    let button1 = null;
+    let button2 = null;
+
+    function startSelfie(event){
+        img = document.createElement('img');
+        img.src = "photo";
+        img.style.height = '400px';
+        img.style.width = '500px';
+        container[0].append(img);
+        button.style.display = "none";  // hide button
+        button1 = document.createElement('button');
+        button2 = document.createElement('button');
+        button1.id = 'TakePhoto';
+        button2.id = 'STOP';
+        button1.textContent = 'Take Selfie 😊';
+        button2.textContent = 'Stop';
+        
+        otherContainer[0].append(button1);
+        otherContainer[0].append(button2);
+    }
+    button.addEventListener('click', startSelfie);
+
+
+</script>
+
 {% endblock %}
