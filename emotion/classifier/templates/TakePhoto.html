@@ -126,10 +126,11 @@
     let otherContainer = document.getElementsByClassName("otherButtons");
     let button1 = null;
     let button2 = null;
+    let img = null;
 
     function startSelfie(event){
         img = document.createElement('img');
-        img.src = "photo";
+        img.src = "photo" + "?t=" + new Date().getTime();;
         img.style.height = '400px';
         img.style.width = '500px';
         container[0].append(img);
@@ -139,12 +140,20 @@
         button1.id = 'TakePhoto';
         button2.id = 'STOP';
         button1.textContent = 'Take Selfie 😊';
-        button2.textContent = 'Stop';
+        button2.textContent = 'Clear';
         
         otherContainer[0].append(button1);
         otherContainer[0].append(button2);
+
+        button1.addEventListener('click', function(){
+            let source = "{{url_for('selfie')}}"
+            img.src = source + "?t=" + new Date().getTime();
+
+        })
     }
     button.addEventListener('click', startSelfie);
+
+
 
 
 </script>

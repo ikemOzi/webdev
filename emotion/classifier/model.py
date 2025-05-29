@@ -1,6 +1,7 @@
 import keras
 import cv2
 import numpy as np
+import base64
 
 model = keras.models.load_model(r"C:\Users\IKEMBUCHUKWU\PycharmProjects\automating\emotion\classifier\artifacts\disgust_surp_happy_sad 83.keras")
 
@@ -120,11 +121,41 @@ def generate_frames():
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
     
 
+
+##### CAMERA
+
+camera_streaming = False
+
+capture = None
+
+def change_streaming(value):
+    global camera_streaming
+    camera_streaming = value
+
+
+def intit_camera():
+    global capture
+    if capture is None or not capture.isOpened():
+        capture = cv2.VideoCapture(0)
+
+def capture_stream():
+    intit_camera()
+    return capture.read()
+    # isTrue, frame = capture.read()
+    # return isTrue, frame
+
+def release_camera():
+    global capture
+    if capture is not None:
+        capture.release()
+        capture = None
+
+
+
 def camera_video():
-    capture = cv2.VideoCapture(0)
 
     while True:
-        isTrue, frame = capture.read()
+        isTrue, frame = capture_stream()
         if not isTrue:
             print('Failed to read frame')
             break
@@ -132,11 +163,21 @@ def camera_video():
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-        # cv2.imshow('Camera', frame)
+        
+        # convert to jpeg
         ret,buffer = cv2.imencode('.jpg', frame)
         frame= buffer.tobytes()
 
-        yield (b'--frame\r\n'
-           b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-   
+        if camera_streaming:
+            yield (b'--frame\r\n'
+                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+        else:
+            
+            # change to Base64 encode
+            img_base64 = base64.b64encode(buffer).decode('utf-8')
+            data_url = f"data:image/jpeg;base64,{img_base64}"
+            image = data_url.encode('utf-8')
+            yield image
+            break
+                
+            

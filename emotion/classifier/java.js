@@ -4,6 +4,7 @@ let button = document.getElementById('startButton');
 let otherContainer = document.getElementsByClassName("otherButtons");
 let button1 = null;
 let button2 = null;
+let img = null;
 
 function startSelfie(event){
     img = document.createElement('img');
@@ -21,3 +22,27 @@ function startSelfie(event){
 
 
 }
+
+function takeSelfie(event){
+    let source = "{{url_for('selfie')}}"
+    img.src = source
+}
+
+button1.addEventListener('click', takeSelfie)
+
+
+
+
+
+
+// clear
+
+function clearPic(event){
+    if (img != null){
+        button.style.display = "block";
+        container[0].removeChild(img);
+
+    }
+
+}
+button2.addEventListener('click', clearPic);
