@@ -6,6 +6,7 @@ let button1 = null;
 let button2 = null;
 let img = null;
 
+
 function startSelfie(event){
     img = document.createElement('img');
     img.src = "photo";
@@ -26,10 +27,17 @@ function startSelfie(event){
 function takeSelfie(event){
     let source = "{{url_for('selfie')}}"
     img.src = source
+
 }
 
 button1.addEventListener('click', takeSelfie)
 
+ button1.addEventListener('click', function(){
+            let source = "{{url_for('selfie')}}";
+            img.src = source + "?t=" + new Date().getTime();
+            content.textContent = 'YOUR EMOTION IS '
+
+        })
 
 
 

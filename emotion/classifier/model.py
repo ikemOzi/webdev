@@ -125,16 +125,21 @@ def generate_frames():
 ##### CAMERA
 
 camera_streaming = False
-
+camera_stop_requested = False
 capture = None
 
 def change_streaming(value):
     global camera_streaming
     camera_streaming = value
 
+def stop_requested(value):
+    global camera_stop_requested
+    camera_stop_requested = value
 
 def intit_camera():
     global capture
+    if camera_stop_requested:
+        return
     if capture is None or not capture.isOpened():
         capture = cv2.VideoCapture(0)
 
@@ -148,13 +153,17 @@ def release_camera():
     global capture
     if capture is not None:
         capture.release()
+        global camera_stop_requested
+        camera_stop_requested = True
         capture = None
 
 
 
 def camera_video():
+    global camera_stop_requested
+    camera_stop_requested = False
 
-    while True:
+    while not camera_stop_requested:
         isTrue, frame = capture_stream()
         if not isTrue:
             print('Failed to read frame')
@@ -179,5 +188,44 @@ def camera_video():
             image = data_url.encode('utf-8')
             yield image
             break
+    
+    release_camera()
+
+
+def emotion_classifier(frame):
+    faceCascade = cv2.CascadeClassifier(r"C:\Users\IKEMBUCHUKWU\PycharmProjects\automating\emotion\classifier\artifacts\haarcascades\haarcascade_frontalface_default.xml")
+    #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    faces = faceCascade.detectMultiScale(frame, 1.1, 4)
+    if len(faces) == 0:
+        # print('No faces detected')
+        return 'No faces detected'
+    for (x, y, w, h) in faces: ## draws the rectangle
+        roi_color = frame[y:y + h, x:x + w]
+        break
+    final_image = cv2.resize(roi_color, (64, 64))
+    final_image = np.expand_dims(final_image, axis=0)
+    final_image = final_image / 255.0
+
+    prediction = model.predict(final_image)
+
+    if (np.argmax(prediction) == 0):
+        status = 'Disgust'
+        return status
+    
+    if (np.argmax(prediction) == 1):
+        status = 'Surprise'
+        return status
+    
+    if (np.argmax(prediction) == 2):
+        status = 'Happy'
+        return status
+
+    if (np.argmax(prediction) == 3):
+        status = 'Sad'
+        return status
+
+    
+
+
                 
             
